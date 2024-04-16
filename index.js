@@ -2,7 +2,7 @@ const { ThorClient, HttpClient } = require("@vechain/sdk-network");
 const { ethers } = require("ethers");
 const { read } = require("read");
 const fs = require("fs");
-const { addressUtils, fragment } = require("@vechain/sdk-core");
+const { addressUtils, fragment, unitsUtils } = require("@vechain/sdk-core");
 
 const client = new ThorClient(new HttpClient("https://testnet.vechain.org"));
 const transferAbi = {
@@ -31,7 +31,9 @@ const buildClauses = (records) => {
   for (let i = 0; i < records.length; i++) {
     const { address, amount } = records[i];
 
-    const data = transferFragment.encodeInput([address, amount]);
+    const _amount = unitsUtils.parseUnits(amount, 18);
+
+    const data = transferFragment.encodeInput([address, _amount]);
 
     clauses.push({
       to: contractAddress,
@@ -65,7 +67,7 @@ const airdrop = async (records, privateKey) => {
   );
 
   if (estimation.reverted) {
-    console.log("Estimation failed");
+    console.log("Estimation failed", estimation);
     throw new Error("Estimation failed");
   }
 
