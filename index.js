@@ -78,12 +78,7 @@ const airdrop = async (records, privateKey) => {
 
   const tx = await client.transactions.sendTransaction(signed);
 
-  const receipt = tx.wait();
-
-  console.log(receipt);
-
-  console.log(`Tx: ${tx.id}`);
-
+  console.log(`Transaction ID: ${tx.id}`);
   console.log(`https://explore-testnet.vechain.org/transactions/${tx.txid}`);
 };
 
